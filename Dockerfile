@@ -1,7 +1,7 @@
 FROM node:21 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --verbose
 
 COPY . .
 RUN npm run build

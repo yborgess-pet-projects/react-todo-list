@@ -82,10 +82,13 @@ export async function deleteTodoApi(id) {
 export async function updateTodoApi(id, completed) {
     const url = API_VERSION + "/todos/" + id
 
+    const patchHeaders = new Headers(headers);
+    patchHeaders.set('Content-Type', 'application/merge-patch+json');
+
     const todo = {completed}
     const options = {
         method: "PATCH",
-        headers: headers,
+        headers: patchHeaders,
         cache: "no-cache",
         mode: "cors",
         body: JSON.stringify(todo)
@@ -105,10 +108,13 @@ export async function updateTodoApi(id, completed) {
 export async function editTitleApi(todo) {
     const url = API_VERSION + "/todos/" + todo.id
 
+    const patchHeaders = new Headers(headers);
+    patchHeaders.set('Content-Type', 'application/merge-patch+json');
+
     const payload = {title: todo.title}
     const options = {
         method: "PATCH",
-        headers: headers,
+        headers: patchHeaders,
         cache: "no-cache",
         mode: "cors",
         body: JSON.stringify(payload)
