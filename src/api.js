@@ -132,32 +132,5 @@ export async function editTitleApi(todo) {
 }
 
 
-export async function test() {
-    const url = API_VERSION + "/todos/test/test"
-
-    const options = {
-        method: "GET",
-        cache: "no-cache",
-        mode: "cors",
-        headers: {
-            Authentication: 'localhost'
-        }
-    }
-
-    const request = new Request(url, options)
-
-    return fetch(request)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json()
-        })
-        .catch((error) => {
-            console.error(error)
-            throw new Error(error.message + ": Failed to create a new Todo from " + request.url)
-        })
-}
-
 
 
