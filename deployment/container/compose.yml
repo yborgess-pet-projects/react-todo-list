@@ -1,0 +1,9 @@
+services:
+  todo-list-app:
+    environment:
+      - APP_BACKEND_URL="${ENV_BACKEND_HOST}"
+      - ENV_FRONT_LISTEN_PORT=5173
+    image: "quay.io/yborgess/todo-list-react-frontend:1.0"
+    container_name: "todo-list-frontend"
+    ports:
+      - 5173:5173

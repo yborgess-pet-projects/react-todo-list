@@ -1,0 +1,11 @@
+.MuiList-root {
+    width: 100%;
+    border-radius: 3px;
+    border: 1px solid #e5e7eb;
+    margin: 0 !important;
+    padding: 0 !important;;
+}
+
+.edit-btn {
+    margin-right: 10px !important;
+}

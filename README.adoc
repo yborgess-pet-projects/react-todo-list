@@ -1,0 +1,92 @@
+= React Todo List app
+
+A simple Todo List frontend application done with React, Material UI and TypeScript.
+
+- It is deployed on a https://nginx.org/[nginx] web server
+- It expects to consume the API from a backend microservice, see https://github.com/yborgess-pet-projects/spring-boot-todo-list.git[spring-boot-todo-list] or https://github.com/yborgess-pet-projects/quarkus-todo-list[quarkus-todo-list]
+- It can run as a container application or deployed on a container orchestrator, for example on Openshift.
+
+== Requirements
+- https://nodejs.org/en/[Node.js] to run it locally
+- A container engine, to run it as a container, for example https://podman.io/[podman] or https://www.docker.com/[docker]
+- Docker or podman compose, to run it as a container.
+- A Kubernetes cluster, for example OpenShift. You can have one online using https://developers.redhat.com/developer-sandbox[Red Hat Developer Sandbox].
+
+== How to run it locally
+
+. Execute the following
++
+[source]
+----
+$ pnpm run dev
+----
+When running locally, it expects a backend API application available at http://localhost:8080.
+
+== How to run it as a container
+
+. Build the Dokerfile and push the image to your container registry. I use quay.io and podman:
++
+[source]
+----
+$ podman build -t quay.io/yborgess/todo-list-react-frontend:1.0 .
+$ podman push quay.io/yborgess/todo-list-react-frontend:1.0
+----
+
+. Launch the frontend application using the compose file:
++
+[source]
+----
+$ ENV_BACKEND_HOST="http://todo-list-app:8080" podman compose -f ./deployment/container/compose.yml up
+----
++
+The above assumes that the backend application is available at `http://todo-list-app:8080` and that host can be resolved using the container's DNS. If your backend server is currently not running on a container, for example it is running locally and cannot be resolved using the container's DNS, you can configure the compose file to run in the host network mode and use the host IP address to access the backend application. For example:
++
+[source]
+----
+$ ENV_BACKEND_HOST="http://192.168.1.226:8080" podman compose -f ./deployment/container/compose.yml -f ./deployment/container/compose-host-network.yml up
+----
+. Navigate to http://localhost:5173 to access to the application.
+
+. To stop the frontend application container:
++
+[source]
+----
+$ podman compose -f ./deployment/container/compose.yml down
+----
+
+== How to run it on OpenShift
+
+. Apply the following resource:
++
+[source]
+----
+$ oc apply -f ./deployment/openshift/deployment.yml
+----
++
+The frontend deployment resource expects communicate with the backend using a service named `todo-list-backend-svc` available on the same namespace where the frontend application is deployed.
+
+. Expose the frontend application, so you can access to it from outside the Kubernetes cluster:
++
+[source]
+----
+$ oc expose svc/todo-list-frontend-svc
+----
+
+. Get the host name of the exposed application and open it in a browser:
++
+[source]
+----
+$ echo "http://$(oc get route/todo-list-frontend-svc -o jsonpath='{.spec.host}')"
+http://todo-list-frontend-svc-yborgess1-dev.apps.sandbox-m3.1530.p1.openshiftapps.com
+----
++
+image::./docs/todo-list-front.png[]
+
+=== Clean up resources
+
+You can delete all the frontend resources using:
+
+[source]
+----
+$ oc delete all -l tier=frontend
+----
