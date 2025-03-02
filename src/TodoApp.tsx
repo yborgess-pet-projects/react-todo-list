@@ -1,40 +1,26 @@
 import './App.css'
 import {useTodos} from "./api/todos.api.ts";
-import {
-  Alert,
-  Backdrop,
-  Button,
-  Checkbox,
-  CircularProgress,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  TextField
-} from "@mui/material";
-import {MouseEvent, useEffect, useState} from "react";
+import {Alert, Backdrop, Button, CircularProgress, TextField} from "@mui/material";
+import {useEffect, useState} from "react";
 import {Todo} from "./todos.types.ts";
+import {TodoList} from "./components/TodoList.tsx";
 
 const todoHolder: Todo = { id: 0, title: '', completed: false }
 
-function App() {
-  const { loading, error, data, updateTodo, deleteTodo, addTodo } = useTodos()
-  const [editTodo, setEditTodo] = useState<Todo>(todoHolder)
-  const [editMode, setEditMode] = useState(false)
+function TodoApp() {
+  const { loading, error, data, updateTodo, deleteTodo, addTodo } = useTodos();
+  const [editTodo, setEditTodo] = useState<Todo>(todoHolder);
+  const [editMode, setEditMode] = useState(false);
 
-  const onCompleteClick = (todo: Todo) => {
+  const onComplete = (todo: Todo) => {
     void updateTodo(todo);
   }
 
-  const onDeleteClick = (e: MouseEvent<HTMLButtonElement>, id: number) => {
-    e.stopPropagation()
+  const onDelete = (id: number) => {
     void deleteTodo(id)
   }
 
-  const onEditClick = (e: MouseEvent<HTMLButtonElement>, todo: Todo) => {
-    e.stopPropagation()
+  const onEdit = (todo: Todo) => {
     setEditTodo(todo)
     setEditMode(true)
     document.getElementById('todo-input')?.focus()
@@ -83,53 +69,13 @@ function App() {
           <h1 className="flex items-center justify-center text-3xl m-4">
             Todo List
           </h1>
-          <List className="todos-list">
-            {data?.map((todo, index) => (
-              <div key={todo.id}>
-                <ListItem
-                  disablePadding
-                  secondaryAction={
-                    <div className="flex gap-4">
-                      <Button
-                        disabled={editMode}
-                        className={"edit-btn"}
-                        variant="contained"
-                        onClick={e => onEditClick(e, todo)}>
-                        Edit
-                      </Button>
-                      <Button
-                        disabled={editMode}
-                        variant="contained"
-                        color="error"
-                        onClick={e => onDeleteClick(e, todo.id)}>
-                        Delete
-                      </Button>
-                    </div>
-                  }
-                >
-                  <ListItemButton
-                    disabled={editMode}
-                    dense
-                    sx={{ paddingLeft: 2, paddingRight: 2 }}
-                    onClick={() => onCompleteClick({ ...todo, completed: !todo.completed })}>
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        checked={todo.completed}
-                        disableRipple
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={todo.title}
-                      sx={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-                {index < data.length - 1 && <Divider/>}
-              </div>
-            ))}
-          </List>
 
+          <TodoList todos={data}
+                    editMode={editMode}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onComplete={onComplete}
+          />
 
           <div className="flex mt-6 gap-4">
             <TextField
@@ -169,12 +115,12 @@ function App() {
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
-        <CircularProgress color="inherit" />
+        <CircularProgress color="inherit"/>
       </Backdrop>
     </>
   )
 }
 
-export default App
+export default TodoApp
 
 

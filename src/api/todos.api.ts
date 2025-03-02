@@ -37,7 +37,6 @@ export const useTodos = () => {
   }
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         setInternalLoading(true);

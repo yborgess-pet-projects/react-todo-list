@@ -1,14 +1,14 @@
 import {expect, test} from 'vitest'
 import {fireEvent, render, screen, waitFor} from "@testing-library/react";
-import App from "../App.tsx";
+import TodoApp from "../TodoApp.tsx";
 
 test("When application is loaded, then it renders the list of todos", async () => {
-  render(<App/>);
+  render(<TodoApp/>);
   await waitApplicationLoaded();
 });
 
 test("When clicking in Add button, then a new todo is added to the list", async () => {
-  const { getByText, container } = render(<App/>);
+  const { getByText, container } = render(<TodoApp/>);
   await waitApplicationLoaded();
 
   const input = container.querySelector("#todo-input");
@@ -26,7 +26,7 @@ test("When clicking in Add button, then a new todo is added to the list", async 
 });
 
 test("When clicking in Edit button and then save, we can edit a Todo title", async () => {
-  const { getAllByText, container, getByText } = render(<App/>);
+  const { getAllByText, container, getByText } = render(<TodoApp/>);
   await waitApplicationLoaded();
 
   const editButton = getAllByText("Edit")[0];
@@ -48,7 +48,7 @@ test("When clicking in Edit button and then save, we can edit a Todo title", asy
 });
 
 test("When clicking on first delete button, then the first todo is deleted", async () => {
-  const { getAllByText, queryByText } = render(<App/>);
+  const { getAllByText, queryByText } = render(<TodoApp/>);
   await waitApplicationLoaded();
 
   const deleteButton = getAllByText("Delete")[0];
@@ -62,7 +62,7 @@ test("When clicking on first delete button, then the first todo is deleted", asy
 });
 
 test("When click on the second Todo, then the todo is marked as completed", async () => {
-  const { container, getByText } = render(<App/>);
+  const { container, getByText } = render(<TodoApp/>);
   await waitApplicationLoaded();
 
   const checkbox = container.querySelectorAll("li.MuiListItem-root")[2] as HTMLInputElement;
