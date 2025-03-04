@@ -1,3 +1,5 @@
+import {AxiosError} from "axios";
+
 export interface Todo {
   id:        number;
   title:     string;
@@ -19,4 +21,21 @@ export class Convert {
   public static todoToJson(todo: Todo): string {
     return JSON.stringify(todo);
   }
+}
+
+export interface EditModeContextType {
+  editMode: boolean;
+  editingTodo: Todo;
+  setEditingTodo: (todo: Todo) => void;
+  enableEditMode: (todo: Todo) => void;
+  disableEditMode: () => void;
+}
+
+export interface TodosContextType {
+  todos: Todo[];
+  addTodo: (title: string) => void;
+  updateTodo: (todo: Todo) => void;
+  deleteTodo: (id: number) => void;
+  loading: boolean;
+  error: AxiosError | null;
 }
